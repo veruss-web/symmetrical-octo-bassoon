@@ -1,0 +1,349 @@
+/* Mode demo (components/demo/demo-chip.tsx, tombol "Coba demo" di components/auth/login.tsx). Warna dari variabel tema: terang dan gelap ikut
+   otomatis. Chip ada di top bar dashboard; panduan dan kartu "waktu habis" dipasang lewat portal di <body> supaya tidak terpotong top bar. */
+
+/* ---------- chip hitung mundur ---------- */
+.demo-chip {
+  --chip-a: #ff7a45;
+  --chip-b: #ff5a2c;
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  gap: 8px;
+  height: 42px;
+  padding: 0 14px 0 7px;
+  color: #fff;
+  font: 800 13px Manrope, sans-serif;
+  letter-spacing: .04em;
+  white-space: nowrap;
+  border: 0;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--chip-a), var(--chip-b));
+  box-shadow: 0 10px 22px -12px var(--chip-b), inset 0 1px 0 rgba(255, 255, 255, .3);
+  cursor: pointer;
+  transition: transform .15s ease, box-shadow .2s ease;
+}
+
+.demo-chip:active {
+  transform: scale(.97);
+}
+
+.demo-chip:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--chip-b) 55%, transparent);
+  outline-offset: 2px;
+}
+
+.demo-chip[data-level="warn"] {
+  --chip-a: #f5b301;
+  --chip-b: #e08a00;
+}
+
+.demo-chip[data-level="danger"] {
+  --chip-a: #ef4444;
+  --chip-b: #c81e1e;
+  animation: demo-pulse 1s ease-in-out infinite;
+}
+
+.demo-chip b {
+  min-width: 34px;
+  font: 800 15px/1 Manrope, sans-serif;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+}
+
+/* the ring empties as the time runs out (the ring is a masked ::before so the clock icon in the middle stays visible) */
+.demo-chip-ring {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+}
+
+.demo-chip-ring::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(#fff var(--p, 100%), rgba(255, 255, 255, .32) 0);
+  -webkit-mask: radial-gradient(circle at center, transparent 11px, #000 12px);
+  mask: radial-gradient(circle at center, transparent 11px, #000 12px);
+}
+
+.demo-chip-ring svg {
+  position: relative;
+}
+
+@media (max-width: 560px) {
+  .demo-chip {
+    height: 38px;
+    padding-right: 11px;
+  }
+
+  .demo-chip-label {
+    display: none;
+  }
+}
+
+/* ---------- panduan (portal) ---------- */
+.demo-pop {
+  position: fixed;
+  top: 84px;
+  right: 16px;
+  z-index: 2147482000;
+  width: min(390px, calc(100vw - 24px));
+  max-height: calc(100vh - 100px);
+  max-height: calc(100dvh - 100px);
+  padding: 20px;
+  overflow-y: auto;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: var(--surface);
+  box-shadow: 0 30px 60px -24px rgba(12, 16, 24, .45);
+  animation: demo-rise .3s cubic-bezier(.2, .8, .2, 1) both;
+}
+
+.demo-pop h3 {
+  margin: 12px 0 6px;
+  font: 800 20px Manrope, sans-serif;
+}
+
+.demo-pop p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+
+.demo-pop p b {
+  color: var(--ink);
+}
+
+.demo-pop-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  color: var(--muted);
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.demo-pop-close:hover {
+  color: var(--ink);
+  background: color-mix(in srgb, var(--ink) 8%, transparent);
+}
+
+.demo-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  color: #ff5a2c;
+  font: 800 11px Manrope, sans-serif;
+  letter-spacing: .08em;
+  border-radius: 99px;
+  background: color-mix(in srgb, #ff5a2c 13%, var(--surface));
+}
+
+.demo-tips {
+  display: grid;
+  gap: 11px;
+  margin: 16px 0 18px;
+  padding: 0;
+  list-style: none;
+}
+
+.demo-tips li {
+  display: flex;
+  gap: 11px;
+  align-items: flex-start;
+}
+
+.demo-tips li > span {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  margin-top: 1px;
+  color: #fff;
+  border-radius: 50%;
+  background: #22c55e;
+}
+
+.demo-tips b {
+  display: block;
+  font: 700 13.5px Manrope, sans-serif;
+}
+
+.demo-tips small {
+  display: block;
+  margin-top: 1px;
+  color: var(--muted);
+  font-size: 12.5px;
+  line-height: 1.45;
+}
+
+.demo-pop-actions {
+  display: grid;
+  gap: 8px;
+}
+
+.demo-primary,
+.demo-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  height: 44px;
+  padding: 0 16px;
+  font: 800 14px Manrope, sans-serif;
+  border-radius: 14px;
+  cursor: pointer;
+}
+
+.demo-primary {
+  color: #fff;
+  border: 0;
+  background: linear-gradient(135deg, #ff7a45, #ff5a2c);
+  box-shadow: 0 14px 26px -14px #ff5a2c;
+}
+
+.demo-ghost {
+  color: var(--ink);
+  border: 1px solid var(--line);
+  background: transparent;
+}
+
+.demo-ghost:hover {
+  background: color-mix(in srgb, var(--ink) 6%, transparent);
+}
+
+@media (max-width: 560px) {
+  .demo-pop {
+    top: 70px;
+    right: 12px;
+    left: 12px;
+    width: auto;
+    padding: 18px;
+  }
+}
+
+/* ---------- waktu habis (portal) ---------- */
+.demo-end {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483000;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(10, 12, 18, .72);
+  animation: demo-fade .25s ease-out both;
+}
+
+.demo-end-card {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  width: min(400px, 100%);
+  padding: 28px 24px 22px;
+  text-align: center;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  background: var(--surface);
+  box-shadow: 0 40px 80px -30px rgba(0, 0, 0, .6);
+  animation: demo-rise .35s cubic-bezier(.2, .8, .2, 1) both;
+}
+
+.demo-end-card h2 {
+  margin: 4px 0 0;
+  font: 800 24px Manrope, sans-serif;
+}
+
+.demo-end-card p {
+  margin: 0 0 10px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.demo-end-card .demo-primary,
+.demo-end-card .demo-ghost {
+  width: 100%;
+}
+
+.demo-end-icon {
+  display: grid;
+  place-items: center;
+  width: 68px;
+  height: 68px;
+  color: #fff;
+  border-radius: 22px;
+  background: linear-gradient(135deg, #ff7a45, #ff5a2c);
+  box-shadow: 0 16px 34px -14px #ff5a2c;
+}
+
+/* ---------- tombol "Coba demo" di halaman masuk ---------- */
+.auth-demo {
+  display: grid;
+  gap: 4px;
+  margin-top: 14px;
+  padding-top: 16px;
+  text-align: center;
+  border-top: 1px dashed var(--line, #e3e7ee);
+}
+
+.auth-demo-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  width: 100%;
+  height: 50px;
+  color: #ff5a2c;
+  font: 800 15px Manrope, sans-serif;
+  border: 1.5px solid color-mix(in srgb, #ff5a2c 45%, transparent);
+  border-radius: 16px;
+  background: color-mix(in srgb, #ff5a2c 8%, transparent);
+  cursor: pointer;
+  transition: background .2s ease, transform .15s ease;
+}
+
+.auth-demo-btn:hover {
+  background: color-mix(in srgb, #ff5a2c 15%, transparent);
+}
+
+.auth-demo-btn:active {
+  transform: scale(.98);
+}
+
+.auth-demo small {
+  color: var(--muted, #8a919e);
+  font-size: 12.5px;
+}
+
+@keyframes demo-rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(.98);
+  }
+}
+
+@keyframes demo-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes demo-pulse {
+  50% {
+    box-shadow: 0 0 0 6px rgba(239, 68, 68, .22), 0 10px 22px -12px #c81e1e;
+  }
+}

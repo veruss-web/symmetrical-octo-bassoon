@@ -1,0 +1,244 @@
+/* Kasir: daftar menu (foto utuh, tidak terpotong) dan pilihan kategori yang berwarna.
+   Markup: components/pos/menu-tile.tsx dan components/screens/pos.tsx. Dimuat setelah globals.css + tema gelap, jadi selector dibuat
+   satu tingkat lebih spesifik (.ks-page ...) agar menang atas aturan lama, termasuk .dark .ks-tile-media dan html.dark img.
+   Semua warna dari variabel tema + warna kategori (--cat pada kartu, --c / --on pada pil), jadi terang dan gelap ikut otomatis. */
+
+/* ---------- 1. pilihan kategori ---------- */
+.ks-page .ks-cats {
+  gap: 10px;
+  padding: 6px 4px 18px;
+  margin: 0 -4px;
+  scroll-snap-type: x proximity;
+}
+
+.ks-page .ks-cats button {
+  --c: #ff5a2c;
+  --on: #fff;
+  --ce: var(--c);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  gap: 9px;
+  height: 50px;
+  padding: 0 10px 0 8px;
+  color: var(--ink);
+  font: 800 14px Manrope, sans-serif;
+  white-space: nowrap;
+  border-radius: 17px;
+  border: 1.5px solid color-mix(in srgb, var(--ce) 30%, var(--line));
+  background: linear-gradient(180deg, color-mix(in srgb, var(--ce) 15%, var(--surface)), color-mix(in srgb, var(--ce) 7%, var(--surface)));
+  box-shadow: 0 8px 18px -16px var(--ce);
+  scroll-snap-align: start;
+  cursor: pointer;
+  transition: transform .15s ease, box-shadow .2s ease, border-color .2s ease, background .2s ease, color .2s ease;
+}
+
+/* a very dark category colour (the default "Arang") would vanish on the dark theme: use a light steel tone there */
+html.dark .ks-page .ks-cats button[data-deep] {
+  --ce: color-mix(in srgb, var(--c) 20%, #cdd5e3);
+  --on: #0c1016;
+}
+
+.ks-page .ks-cats .ks-cat-ico {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 34px;
+  height: 34px;
+  font-size: 18px;
+  line-height: 1;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--ce) 24%, var(--surface));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ce) 28%, transparent);
+  transition: background .2s ease, box-shadow .2s ease, transform .2s ease;
+}
+
+.ks-page .ks-cats button em {
+  display: grid;
+  place-items: center;
+  min-width: 26px;
+  height: 26px;
+  padding: 0 8px;
+  color: var(--ink);
+  font: 800 12px Manrope, sans-serif;
+  font-style: normal;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--ce) 18%, var(--surface));
+}
+
+@media (hover: hover) {
+  .ks-page .ks-cats button:hover {
+    transform: translateY(-2px);
+    border-color: color-mix(in srgb, var(--ce) 58%, var(--line));
+    box-shadow: 0 14px 24px -16px var(--ce);
+  }
+
+  .ks-page .ks-cats button:hover .ks-cat-ico {
+    transform: scale(1.08) rotate(-4deg);
+  }
+}
+
+.ks-page .ks-cats button:active {
+  transform: scale(.97);
+}
+
+.ks-page .ks-cats button:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--ce) 55%, transparent);
+  outline-offset: 2px;
+}
+
+/* active: the whole pill takes the category colour */
+.ks-page .ks-cats button.active {
+  color: var(--on);
+  border-color: transparent;
+  background: linear-gradient(135deg, var(--ce), color-mix(in srgb, var(--ce) 76%, #000));
+  box-shadow: 0 12px 20px -12px var(--ce), inset 0 1px 0 rgba(255, 255, 255, .3);
+  transform: translateY(-1px);
+}
+
+.ks-page .ks-cats button.active .ks-cat-ico {
+  background: color-mix(in srgb, var(--on) 20%, transparent);
+  box-shadow: none;
+}
+
+.ks-page .ks-cats button.active em {
+  color: var(--on);
+  background: color-mix(in srgb, var(--on) 22%, transparent);
+}
+
+/* ---------- 2. kartu menu ---------- */
+.ks-page .ks-grid {
+  grid-template-columns: repeat(auto-fill, minmax(188px, 1fr));
+  gap: 18px;
+}
+
+.ks-page .ks-menu .ks-tile {
+  border-radius: 24px;
+  border: 1px solid color-mix(in srgb, var(--cat, #ff5a2c) 20%, var(--hair, var(--line)));
+  background: var(--surface);
+}
+
+@media (hover: hover) {
+  .ks-page .ks-menu .ks-tile:hover {
+    box-shadow: 0 24px 40px -26px var(--cat, #ff5a2c);
+  }
+}
+
+/* Every menu photo fills the same SQUARE frame edge to edge (cover, centred): one shape for all tiles, no bars, no blurred sides. A square is the
+   fairest shape for food photos: a portrait (3:4) photo loses a quarter of its height and a landscape (4:3) photo a quarter of its width, so the
+   dish in the middle stays whole. The category-tinted gradient is only what shows while the photo is still loading. */
+.ks-page .ks-menu .ks-tile-media {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  background:
+    radial-gradient(120% 90% at 50% 0%, color-mix(in srgb, var(--cat, #ff5a2c) 22%, var(--surface)), transparent 72%),
+    color-mix(in srgb, var(--cat, #ff5a2c) 9%, var(--surface));
+}
+
+/* no dark shade over the photo (it was there to make the old on-photo stock chip readable) */
+.ks-page .ks-menu .ks-tile-media::after {
+  display: none;
+}
+
+/* absolute + inset 0: the frame has no fixed height (it uses aspect-ratio), so a plain height: 100% would not resolve and a tall photo would
+   grow past the frame. This pins the picture to the frame so object-fit: cover fills it exactly. */
+.ks-page .ks-menu .ks-tile-media .ks-tile-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transform: none; /* no hover zoom: it would cut the edges even more */
+  filter: none; /* html.dark img dims every picture a little; menu photos keep their true colours in both themes */
+}
+
+@media (hover: hover) {
+  .ks-page .ks-menu .ks-tile:hover .ks-tile-media .ks-tile-photo {
+    transform: none;
+  }
+}
+
+.ks-page .ks-menu .ks-tile.out .ks-tile-media .ks-tile-photo {
+  opacity: .6;
+  filter: grayscale(1);
+}
+
+.ks-page .ks-menu .ks-tile-emoji {
+  font-size: 62px;
+  filter: drop-shadow(0 10px 12px rgba(0, 0, 0, .18));
+}
+
+/* info: category label + stock chip on one row, name under them */
+.ks-page .ks-menu .ks-tile-info {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas: "cat chip" "name name";
+  align-items: center;
+  gap: 8px 8px;
+  padding: 14px 14px 0;
+}
+
+.ks-page .ks-menu .ks-tile-info .ks-tile-cat {
+  grid-area: cat;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+}
+
+.ks-page .ks-menu .ks-tile-cat i {
+  flex: 0 0 auto;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--cat, #ff5a2c);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--cat, #ff5a2c) 22%, transparent);
+}
+
+html.dark .ks-page .ks-menu .ks-tile-cat i {
+  background: color-mix(in srgb, var(--cat, #ff5a2c) 55%, #fff);
+}
+
+.ks-page .ks-menu .ks-tile-info b {
+  grid-area: name;
+}
+
+.ks-page .ks-menu .ks-stock {
+  position: static;
+  grid-area: chip;
+  height: 24px;
+  padding: 0 10px 0 8px;
+  color: var(--sc, var(--ink));
+  font-size: 11.5px;
+  border-radius: 99px;
+  background: color-mix(in srgb, var(--sc, var(--ink)) 13%, var(--surface));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--sc, var(--ink)) 24%, transparent);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+@media (max-width: 560px) {
+  .ks-page .ks-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .ks-page .ks-menu .ks-tile {
+    border-radius: 20px;
+  }
+
+  /* the tile is narrow: the chip shrinks to "● 12" so the category name still fits beside it */
+  .ks-page .ks-menu .ks-stock .ks-stock-word {
+    display: none;
+  }
+
+  .ks-page .ks-menu .ks-tile-info {
+    padding: 12px 12px 0;
+  }
+
+  .ks-page .ks-cats button {
+    height: 46px;
+  }
+}
